@@ -9,7 +9,15 @@ import pandas as pd
 from .utils import init_driver, search_page, keep_scroling
 
 
-def scrape(since, hashtag, save_path, headless=True, interval=5, limit=float("inf")):
+def scrape(
+    since,
+    save_path,
+    hashtag=None,
+    from_account=None,
+    headless=True,
+    interval=5,
+    limit=float("inf"),
+):
     header = ["url", "date", "images", "userId", "userName", "likeCount"]
     data = []
     tweet_ids = set()
@@ -31,9 +39,11 @@ def scrape(since, hashtag, save_path, headless=True, interval=5, limit=float("in
             writer.writerow(header)
         while until_local <= datetime.datetime.strptime(until, "%Y-%m-%d"):
             scroll = 0
+            if type(since) != str:
+                since = datetime.datetime.strftime(since, "%Y-%m-%d")
             if type(until_local) != str:
                 until_local = datetime.datetime.strftime(until_local, "%Y-%m-%d")
-            path = search_page(driver, since, hashtag)
+            path = search_page(driver, since, hashtag, from_account)
 
             refresh += 1
             last_position = driver.execute_script("return window.pageYOffset;")

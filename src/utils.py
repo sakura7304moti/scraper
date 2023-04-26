@@ -62,6 +62,8 @@ def get_data(card, save_images=False, save_dir=None):
             image_links.append(image_link)
     except:
         image_links = []
+    if len(image_links) == 0:
+        return
 
     try:
         promoted = (
@@ -105,15 +107,16 @@ def init_driver(headless=True):
     return driver
 
 
-def search_page(driver, since, hashtag):
+def search_page(driver, since, hashtag=None, from_account=None):
+    from_account = (
+        "(from%3A" + from_account + ")%20" if from_account is not None else ""
+    )
     hash_tags = "(%23" + hashtag + ")%20" if hashtag is not None else ""
     since = "since%3A" + since + "%20"
-    today = datetime.date.today()
+    today = datetime.date.today() + datetime.timedelta(days=1)
     today_text = today.strftime("%Y-%m-%d")
     until = "until%3A" + today_text + "%20"
-    path = (
-        f"https://twitter.com/search?q={hash_tags}{until}{since}&src=typed_query&f=live"
-    )
+    path = f"https://twitter.com/search?q={from_account}{hash_tags}{until}{since}&src=typed_query&f=live"
     driver.get(path)
     return path
 
