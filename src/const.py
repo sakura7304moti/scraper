@@ -30,3 +30,71 @@ def get_cookie():
         {"name": "lang", "value": "ja"},
     ]
     return cookie
+
+
+import os
+import pandas as pd
+import yaml
+
+# プロジェクトの相対パス
+base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+# hololive fanart tag list
+def holoList():
+    holo_path = os.path.join(base_path, "option", "HoloFanArt.csv")
+    df = pd.read_csv(holo_path, index_col=0)
+    word_list = df["FanArt"].tolist()
+    return word_list
+
+
+def _output() -> dict:
+    yaml_path = os.path.join(base_path, "option", "output.yaml")
+    with open(yaml_path) as file:
+        yml = yaml.safe_load(file)
+    return yml
+
+
+class Output:
+    def __init__(self):
+        self._base_path = base_path
+        self._yml = _output()
+        # make folders
+        if not os.path.exists(self._yml["base"]["database"]):
+            os.makedirs(self._yml["base"]["database"])
+        if not os.path.exists(self._yml["base"]["image"]):
+            os.makedirs(self._yml["base"]["image"])
+
+        if not os.path.exists(self._yml["holo"]["database"]):
+            os.makedirs(self._yml["holo"]["database"])
+        if not os.path.exists(self._yml["holo"]["image"]):
+            os.makedirs(self._yml["holo"]["image"])
+
+        if not os.path.exists(self._yml["user"]["database"]):
+            os.makedirs(self._yml["user"]["database"])
+        if not os.path.exists(self._yml["user"]["image"]):
+            os.makedirs(self._yml["user"]["image"])
+
+    def base_database(self, hashtag: str):
+        return os.path.join(
+            self._base_path, self._yml["base"]["database"], f"#{hashtag}_database.csv"
+        )
+
+    def base_image(self, hashtag: str):
+        return os.path.join(self._base_path, self._yml["base"]["image"], f"#{hashtag}")
+
+    def holo_database(self, hashtag: str):
+        return os.path.join(
+            self._base_path, self._yml["holo"]["database"], f"#{hashtag}_database.csv"
+        )
+
+    def holo_image(self, hashtag: str):
+        return os.path.join(self._base_path, self._yml["holo"]["image"], f"#{hashtag}")
+
+    def user_database(self, userName: str):
+        return os.path.join(
+            self._base_path, self._yml["base"]["database"], f"{userName}_database.csv"
+        )
+
+    def user_image(self, userName: str):
+        return os.path.join(self._base_path, self._yml["base"]["image"], f"#{userName}")

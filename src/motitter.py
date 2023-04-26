@@ -29,9 +29,13 @@ def scrape(
         days=interval
     )
 
-    if os.path.exists(os.path.dirname(save_path)):
+    if not os.path.exists(os.path.dirname(save_path)):
         os.makedirs(os.path.dirname(save_path))
     driver = init_driver(headless)
+    before_save_path = save_path
+    after_save_path = save_path.replace(".csv", "_after.csv")
+    if os.path.exists(save_path):
+        save_path = after_save_path
     with open(save_path, write_mode, newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if write_mode == "w":
@@ -96,5 +100,26 @@ def scrape(
     # breaked with open
     data = pd.DataFrame(data, columns=header)
     driver.close()
+
+    print(f"before_csv {before_save_path}")
+    print(f"after_csv {after_save_path}")
+    if os.path.exists(after_save_path):
+        before_df = pd.read_csv(before_save_path, index_col=None)
+        marged = pd.merge(data, before_df, on="url", how="outer")
+
+        # 結合後のデータフレームの列を条件にしてデータを更新する
+        marged["date"] = marged["date_y"].fillna(marged["date_x"])
+        marged["images"] = marged["images_y"].fillna(marged["images_x"])
+        marged["userId"] = marged["userId_y"].fillna(marged["userId_x"])
+        marged["userName"] = marged["userName_x"].fillna(marged["userName_y"])
+        marged["likeCount"] = marged["likeCount_x"].fillna(marged["likeCount_y"])
+
+        result = marged[header]  # 結合後のデータフレーム
+        # date列を日付として認識する
+        result["date"] = pd.to_datetime(result["date"])
+        # 日付順に降順にソートする
+        result = result.sort_values("date", ascending=False)
+        result.to_csv(before_save_path)
+        os.remove(after_save_path)
 
     return data
