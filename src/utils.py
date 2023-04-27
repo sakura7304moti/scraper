@@ -53,7 +53,8 @@ def get_data(card, save_images=False, save_dir=None):
         like_cnt = 0
     if like_cnt == "":
         return
-    if int(re.sub("[^0-9]", "", like_cnt)) < 5:
+    like_cnt = int(re.sub("[^0-9]", "", like_cnt))
+    if like_cnt < 5:
         return
 
     try:
