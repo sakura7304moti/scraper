@@ -59,11 +59,12 @@ def get_data(card, save_images=False, save_dir=None):
     try:
         elements = card.find_elements(
             by=By.XPATH,
-            value='.//div[2]/div[2]//img[contains(@src, "https://pbs.twimg.com/")]',
+            value='.//div[2]/div[2]//img[contains(@src, "https://pbs.twimg.com/media")]',
         )
         for element in elements:
             image_link = re.sub(r"&name=.*", "", element.get_attribute("src"))
-            image_links.append(image_link)
+            if "mini" not in image_link:
+                image_links.append(image_link)
     except:
         image_links = []
     if len(image_links) == 0:
@@ -111,16 +112,18 @@ def init_driver(headless=True):
     return driver
 
 
-def search_page(driver, since, hashtag=None, from_account=None):
+def search_page(driver, since, until, hashtag=None, from_account=None):
     from_account = (
         "(from%3A" + from_account + ")%20" if from_account is not None else ""
     )
     hash_tags = "(%23" + hashtag + ")%20" if hashtag is not None else ""
     since = "since%3A" + since + "%20"
-    today = datetime.date.today() + datetime.timedelta(days=1)
-    today_text = today.strftime("%Y-%m-%d")
-    until = "until%3A" + today_text + "%20"
-    path = f"https://twitter.com/search?q={from_account}{hash_tags}{until}{since}&src=typed_query&f=live"
+    # today = datetime.date.today() + datetime.timedelta(days=1)
+    # today_text = today.strftime("%Y-%m-%d")
+    until = "until%3A" + until + "%20"
+    filter_replies = "%20-filter%3Areplies"
+    minlikes = "%20min_faves%3A5"
+    path = f"https://twitter.com/search?q={from_account}{hash_tags}{until}{since}{filter_replies}{minlikes}&src=typed_query&f=live"
     driver.get(path)
     return path
 

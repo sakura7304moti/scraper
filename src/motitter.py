@@ -10,10 +10,11 @@ from .utils import init_driver, search_page, keep_scroling
 
 
 def scrape(
-    since,
-    save_path,
-    hashtag=None,
-    from_account=None,
+    since: str,
+    save_path: str,
+    until: str = None,
+    hashtag: str = None,
+    from_account: str = None,
     headless=True,
     interval=5,
     limit=float("inf"),
@@ -24,7 +25,8 @@ def scrape(
     write_mode = "w"
     refresh = 0
 
-    until = datetime.date.today().strftime("%Y-%m-%d")
+    if until == None:
+        until = datetime.date.today().strftime("%Y-%m-%d")
     until_local = datetime.datetime.strptime(since, "%Y-%m-%d") + datetime.timedelta(
         days=interval
     )
@@ -47,7 +49,7 @@ def scrape(
                 since = datetime.datetime.strftime(since, "%Y-%m-%d")
             if type(until_local) != str:
                 until_local = datetime.datetime.strftime(until_local, "%Y-%m-%d")
-            path = search_page(driver, since, hashtag, from_account)
+            path = search_page(driver, since, until_local, hashtag, from_account)
 
             refresh += 1
             last_position = driver.execute_script("return window.pageYOffset;")
@@ -101,8 +103,6 @@ def scrape(
     data = pd.DataFrame(data, columns=header)
     driver.close()
 
-    print(f"before_csv {before_save_path}")
-    print(f"after_csv {after_save_path}")
     if os.path.exists(after_save_path):
         before_df = pd.read_csv(before_save_path, index_col=None)
         marged = pd.merge(data, before_df, on="url", how="outer")

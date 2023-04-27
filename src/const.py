@@ -93,8 +93,8 @@ class Output:
 
     def user_database(self, userName: str):
         return os.path.join(
-            self._base_path, self._yml["base"]["database"], f"{userName}_database.csv"
+            self._base_path, self._yml["user"]["database"], f"{userName}_database.csv"
         )
 
     def user_image(self, userName: str):
-        return os.path.join(self._base_path, self._yml["base"]["image"], f"#{userName}")
+        return os.path.join(self._base_path, self._yml["user"]["image"], f"#{userName}")
