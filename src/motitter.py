@@ -1,7 +1,6 @@
 import csv
 import os
 import datetime
-import argparse
 from time import sleep
 import random
 import pandas as pd

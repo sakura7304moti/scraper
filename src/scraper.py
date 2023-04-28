@@ -22,7 +22,7 @@ def base_scraper(hashtag: str, since: str):
 
 
 def holo_scraper(since: str):
-    holoList = const.holoList
+    holoList = const.holoList()
     for hashtag in tqdm(holoList, desc="tag"):
         save_path = output.holo_database(hashtag)
         diffs = get_diff_date(save_path, since)
