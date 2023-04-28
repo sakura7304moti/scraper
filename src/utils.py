@@ -98,11 +98,15 @@ def init_driver(headless=True):
     if headless is True:
         print("Scraping on headless mode.")
         options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")  # An error will occur without this line
         options.headless = True
     else:
         options.headless = False
-    driver_path = chromedriver_autoinstaller.install()
-    driver = webdriver.Chrome(options=options, executable_path=driver_path)
+    try:
+        driver_path = chromedriver_autoinstaller.install()
+        driver = webdriver.Chrome(options=options, executable_path=driver_path)
+    except:
+        driver = webdriver.Chrome(options=options)
     driver.get("https://twitter.com/home?lang=ja")
     cookie = get_cookie()
     for c in cookie:
