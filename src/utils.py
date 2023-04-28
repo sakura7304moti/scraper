@@ -65,7 +65,7 @@ def get_data(card, save_images=False, save_dir=None):
         for element in elements:
             image_link = re.sub(r"&name=.*", "", element.get_attribute("src"))
             if "mini" not in image_link:
-                image_links.append(image_link)
+                image_links.append(image_link + "&name=orig")
     except:
         image_links = []
     if len(image_links) == 0:

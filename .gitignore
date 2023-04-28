@@ -4,3 +4,4 @@ test.ipynb
 src/.ipynb_checkpoints/
 src/__pycache__/
 Data/
+.vscode/settings.json
