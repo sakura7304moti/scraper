@@ -1,4 +1,4 @@
 ## Todo
-- 画像のダウンロード処理
-- BaseとHoloのモード作成
-- ユーザーのIDで検索できるようにする
+- holo multi run
+- 一通り機能の動作テスト
+- driveUploader
