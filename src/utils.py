@@ -49,12 +49,11 @@ def get_data(card, save_images=False, save_dir=None):
         like_cnt = card.find_element(
             by=By.XPATH, value='.//div[@data-testid="like"]'
         ).text
+        like_cnt = str(like_cnt)
+        like_cnt = int(re.sub("[^0-9]", "", like_cnt))
     except:
         like_cnt = 0
     if like_cnt == "":
-        return
-    like_cnt = int(re.sub("[^0-9]", "", like_cnt))
-    if like_cnt < 5:
         return
 
     try:
@@ -164,7 +163,7 @@ def keep_scroling(
                     tweet_ids.add(tweet_id)
                     data.append(tweet)
                     last_date = str(tweet[1])
-                    print("Tweet made at: " + str(last_date) + " is found.")
+                    # print("Tweet made at: " + str(last_date) + " is found.")
                     writer.writerow(tweet)
                     tweet_parsed += 1
                     if tweet_parsed >= limit:
@@ -173,7 +172,7 @@ def keep_scroling(
         while tweet_parsed < limit:
             # check scroll position
             scroll += 1
-            print("scroll ", scroll)
+            # print("scroll ", scroll)
             sleep(random.uniform(0.5, 1.5))
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             curr_position = driver.execute_script("return window.pageYOffset;")

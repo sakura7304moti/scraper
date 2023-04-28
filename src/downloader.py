@@ -190,10 +190,6 @@ def image_download(csv_path):
     ]  # images str -> list[str]
 
     tweet_df["date"] = pd.to_datetime(tweet_df["date"])  # date列をdatetime型に変換
-    # num列を数値型に変換
-    tweet_df["likeCount"] = pd.to_numeric(
-        tweet_df["likeCount"].str.replace(",", ""), errors="coerce"
-    )
     saved = 0
     for index, row in tqdm(
         tweet_df.iterrows(), total=len(tweet_df), desc="image DL"

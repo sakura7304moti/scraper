@@ -23,7 +23,7 @@ def base_scraper(hashtag: str, since: str):
 
 def holo_scraper(since: str):
     holoList = const.holoList
-    for hashtag in tqdm(holoList):
+    for hashtag in tqdm(holoList, desc="tag"):
         save_path = output.holo_database(hashtag)
         diffs = get_diff_date(save_path, since)
         for dates in diffs:
@@ -40,8 +40,7 @@ def user_scraper(userName: str, since: str):
     for dates in diffs:
         since = dates[0]
         until = dates[1]
-        print("since ", since)
-        print("until", until)
+        print(f"date {since} -> {until}")
         motitter.scrape(since, save_path, from_account=userName, until=until)
     df = pd.read_csv(save_path, index_col=None)
     return df
@@ -49,18 +48,50 @@ def user_scraper(userName: str, since: str):
 
 # まだ取得していない日付を取得
 def get_diff_date(save_path: str, since: str):
-    today = datetime.date.today().strftime("%Y-%m-%d")
+    today_date = datetime.date.today()
+    today_date = today_date.strftime("%Y-%m-%d")
     if not os.path.exists(save_path):
-        return [[since, today]]
+        return [[since, today_date]]
+    else:
+        if len(df) == 0:
+            return [[since, today_date]]
+        df = pd.read_csv(save_path)
+        since_date = datetime.datetime.strptime(since, "%Y-%m-%d")
+        since_date = since_date.date()
 
-    df = pd.read_csv(save_path, index_col=None)
-    df["date"] = pd.to_datetime(df["date"])
+        df["date"] = pd.to_datetime(df["date"])  # date列をdatetime型に変換
 
-    # df_since to since
-    under_util = df["date"].iloc[-1].strftime("%Y-%m-%d")
-    under = [since, under_util]
+        latest_date = df["date"].max().to_pydatetime()
+        latest_date = latest_date.date()
+        old_date = df["date"].min().to_pydatetime()
+        old_date = old_date.date()
 
-    # df_util to today
-    up_since = df["date"].iloc[0].strftime("%Y-%m-%d")
-    up = [up_since, today]
-    return [under, up]
+        if since_date <= old_date:
+            # @->@ |----| @->@|
+            under_start_date = since_date
+            under_end_date = old_date
+            up_start_date = latest_date
+            up_end_date = today_date
+        else:
+            if latest_date <= since_date:
+                # |----|  @->@|
+                under_start_date = None
+                under_end_date = None
+                up_start_date = since_date
+                up_end_date = today_date
+            else:
+                # |--@--| @->@|
+                under_start_date = None
+                under_end_date = None
+                up_start_date = latest_date
+                up_end_date = today_date
+        if under_start_date == None:
+            up_start_date = up_start_date.strftime("%Y-%m-%d")
+            up_end_date = up_end_date.strftime("%Y-%m-%d")
+            return [[up_start_date, up_end_date]]
+        else:
+            under_start_date = under_start_date.strftime("%Y-%m-%d")
+            under_end_date = under_end_date.strftime("%Y-%m-%d")
+            up_start_date = up_start_date.strftime("%Y-%m-%d")
+            up_end_date = up_end_date.strftime("%Y-%m-%d")
+            return [[under_start_date, under_end_date], [up_start_date, up_end_date]]

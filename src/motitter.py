@@ -5,6 +5,7 @@ import argparse
 from time import sleep
 import random
 import pandas as pd
+from tqdm import tqdm
 
 from .utils import init_driver, search_page, keep_scroling
 
@@ -31,6 +32,15 @@ def scrape(
         days=interval
     )
 
+    count_days = float(
+        (
+            datetime.datetime.strptime(until, "%Y-%m-%d")
+            - datetime.datetime.strptime(since, "%Y-%m-%d")
+        ).days
+    )
+    count_days = int(count_days / interval)
+    progress = 0
+
     if not os.path.exists(os.path.dirname(save_path)):
         os.makedirs(os.path.dirname(save_path))
     driver = init_driver(headless)
@@ -38,6 +48,7 @@ def scrape(
     after_save_path = save_path.replace(".csv", "_after.csv")
     if os.path.exists(save_path):
         save_path = after_save_path
+
     with open(save_path, write_mode, newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if write_mode == "w":
@@ -54,14 +65,13 @@ def scrape(
             refresh += 1
             last_position = driver.execute_script("return window.pageYOffset;")
             scrolling = True
+
             print(
-                "looking for tweets between "
-                + str(since)
-                + " and "
-                + str(until_local)
-                + " ..."
+                "\r {}/{} {} -> {} {}".format(
+                    progress, count_days, since, until_local, path
+                ),
+                end="",
             )
-            print(" path : {}".format(path))
             tweet_parsed = 0
             # sleep
             sleep(random.uniform(0.5, 1.5))
@@ -99,6 +109,7 @@ def scrape(
                 ) + datetime.timedelta(days=interval)
             else:
                 until_local = until_local + datetime.timedelta(days=interval)
+            progress = progress + 1
     # breaked with open
     data = pd.DataFrame(data, columns=header)
     driver.close()
