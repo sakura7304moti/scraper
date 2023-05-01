@@ -126,10 +126,7 @@ def scrape(
 
         result = marged[header]  # 結合後のデータフレーム
         # date列を日付として認識する
-        try:
-            result["date"] = pd.to_datetime(result["date"])
-        except:
-            pass
+        result["date"] = pd.to_datetime(result["date"])
         # 日付順に降順にソートする
         result = result.sort_values("date", ascending=False)
         result.to_csv(before_save_path)

@@ -58,10 +58,8 @@ def get_diff_date(save_path: str, since: str):
             return [[since, today_date]]
         since_date = datetime.datetime.strptime(since, "%Y-%m-%d")
         since_date = since_date.date()
-        try:
-            df["date"] = pd.to_datetime(df["date"])  # date列をdatetime型に変換
-        except:
-            pass
+        df["date"] = pd.to_datetime(df["date"])  # date列をdatetime型に変換
+
 
         latest_date = df["date"].max().to_pydatetime()
         latest_date = latest_date.date()
