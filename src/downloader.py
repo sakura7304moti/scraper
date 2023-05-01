@@ -2,6 +2,7 @@
 import time
 import os
 import urllib
+import datetime
 
 # import timeout_decorator as td
 import shutil
@@ -64,8 +65,9 @@ def save_date_image(date, image_path, mode, query):
     month = str(date.month).zfill(2)
 
     now_week = pd.to_datetime(date).week
-    first_date = date.replace(day=1)
-    start_week = pd.to_datetime(first_date).week
+    #first_date = date.replace(day=1)
+    fdate = datetime.datetime(date.year,date.month,1)
+    start_week = pd.to_datetime(fdate).week
     if date.month == 1:
         start_week = 1
 
