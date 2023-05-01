@@ -29,7 +29,7 @@ def scrape(
         until = datetime.date.today().strftime("%Y-%m-%d")
     if type(until) != str:
         until = datetime.datetime.strftime(until, "%Y-%m-%d")
-    until_local = datetime.datetime.strptime(since, "%Y-%m-%d") #+ datetime.timedelta(days=interval)
+    until_local = datetime.datetime.strptime(since, "%Y-%m-%d") + datetime.timedelta(days=interval)
 
     count_days = float(
         (
@@ -53,7 +53,7 @@ def scrape(
         if write_mode == "w":
             # write the csv header
             writer.writerow(header)
-        while until_local <= datetime.datetime.strptime(until, "%Y-%m-%d"):
+        while until_local <= datetime.datetime.strptime(until, "%Y-%m-%d") + datetime.timedelta(days=interval):
             scroll = 0
             if type(since) != str:
                 since = datetime.datetime.strftime(since, "%Y-%m-%d")
