@@ -29,9 +29,7 @@ def scrape(
         until = datetime.date.today().strftime("%Y-%m-%d")
     if type(until) != str:
         until = datetime.datetime.strftime(until, "%Y-%m-%d")
-    until_local = datetime.datetime.strptime(since, "%Y-%m-%d") + datetime.timedelta(
-        days=interval
-    )
+    until_local = datetime.datetime.strptime(since, "%Y-%m-%d") #+ datetime.timedelta(days=interval)
 
     count_days = float(
         (
