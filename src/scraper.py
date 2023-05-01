@@ -96,4 +96,7 @@ def get_diff_date(save_path: str, since: str):
             under_end_date = under_end_date.strftime("%Y-%m-%d")
             up_start_date = up_start_date.strftime("%Y-%m-%d")
             up_end_date = up_end_date.strftime("%Y-%m-%d")
-            return [[under_start_date, under_end_date], [up_start_date, up_end_date]]
+            if under_start_date == under_end_date:
+                return [[up_start_date, up_end_date]]
+            else:
+                return [[under_start_date, under_end_date], [up_start_date, up_end_date]]

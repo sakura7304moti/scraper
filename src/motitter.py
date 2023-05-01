@@ -53,7 +53,7 @@ def scrape(
         if write_mode == "w":
             # write the csv header
             writer.writerow(header)
-        while until_local <= datetime.datetime.strptime(until, "%Y-%m-%d") + datetime.timedelta(days=interval):
+        while until_local <= datetime.datetime.strptime(until, "%Y-%m-%d"):
             scroll = 0
             if type(since) != str:
                 since = datetime.datetime.strftime(since, "%Y-%m-%d")
@@ -107,7 +107,10 @@ def scrape(
                     until_local, "%Y-%m-%d"
                 ) + datetime.timedelta(days=interval)
             else:
-                until_local = until_local + datetime.timedelta(days=interval)
+                if (until_local - datetime.datetime.strptime(until, "%Y-%m-%d")).days <= interval:
+                    until_local = until_local + datetime.timedelta(days=(until_local - datetime.datetime.strptime(until, "%Y-%m-%d")).days)
+                else:
+                    until_local = until_local + datetime.timedelta(days=interval)
             progress = progress + 1
     # breaked with open
     data = pd.DataFrame(data, columns=header)
