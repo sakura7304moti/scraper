@@ -66,8 +66,8 @@ def save_date_image(date, image_path, mode, query):
 
     now_week = pd.to_datetime(date).week
     #first_date = date.replace(day=1)
-    fdate = datetime.datetime(date.year,date.month,1)
-    start_week = pd.to_datetime(fdate).week
+    first_date = datetime.datetime(date.year,date.month,1)
+    start_week = pd.to_datetime(first_date).week
     if date.month == 1:
         start_week = 1
 
