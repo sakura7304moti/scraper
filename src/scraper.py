@@ -4,6 +4,7 @@ import os
 from tqdm import tqdm
 import pandas as pd
 import datetime
+import copy
 
 output = const.Output()
 
@@ -27,8 +28,8 @@ def holo_scraper(since: str):
         save_path = output.holo_database(hashtag)
         diffs = get_diff_date(save_path, since)
         for dates in diffs:
-            since = dates[0]
-            until = dates[1]
+            since = copy.deepcopy(dates[0])
+            until = copy.deepcopy(dates[1])
             print("since ", since)
             print("until", until)
             motitter.scrape(since, save_path, hashtag=hashtag, until=until)
