@@ -25,13 +25,14 @@ def base_scraper(hashtag: str, since: str):
 def holo_scraper(since: str):
     holoList = const.holoList()
     for hashtag in tqdm(holoList, desc="tag"):
+        print(f'hashtag {hashtag}')
         save_path = output.holo_database(hashtag)
         diffs = get_diff_date(save_path, since)
+        print(f'diffs -> {diffs}')
         for dates in diffs:
             since = copy.deepcopy(dates[0])
             until = copy.deepcopy(dates[1])
-            print("since ", since)
-            print("until", until)
+            print(f"date {since} -> {until}")
             motitter.scrape(since, save_path, hashtag=hashtag, until=until)
 
 
