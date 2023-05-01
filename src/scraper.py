@@ -49,8 +49,8 @@ def user_scraper(userName: str, since: str):
 # まだ取得していない日付を取得
 def get_diff_date(save_path: str, since: str):
     today_date = datetime.date.today()
-    today_date = today_date.strftime("%Y-%m-%d")
     if not os.path.exists(save_path):
+        today_date = today_date.strftime("%Y-%m-%d")
         return [[since, today_date]]
     else:
         df = pd.read_csv(save_path)
