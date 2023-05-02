@@ -11,13 +11,12 @@ output = const.Output()
 
 def base_scraper(hashtag: str, since: str):
     save_path = output.base_database(hashtag)
-    diffs = get_diff_date(save_path, since)
+    diffs = get_diff_date(save_path, copy.deepcopy(since))
     for dates in diffs:
-        since = dates[0]
+        since_str = dates[0]
         until = dates[1]
-        print("since ", since)
-        print("until", until)
-        motitter.scrape(since, save_path, hashtag=hashtag, until=until)
+        print(f"date {since_str} -> {until}")
+        motitter.scrape(since_str, save_path, hashtag=hashtag, until=until)
     df = pd.read_csv(save_path, index_col=None)
     return df
 
@@ -27,23 +26,23 @@ def holo_scraper(since: str):
     for hashtag in tqdm(holoList, desc="tag"):
         print(f'hashtag {hashtag}')
         save_path = output.holo_database(hashtag)
-        diffs = get_diff_date(save_path, since)
+        diffs = get_diff_date(save_path, copy.deepcopy(since))
         print(f'diffs -> {diffs}')
         for dates in diffs:
-            since = copy.deepcopy(dates[0])
+            since_str = copy.deepcopy(dates[0])
             until = copy.deepcopy(dates[1])
-            print(f"date {since} -> {until}")
-            motitter.scrape(since, save_path, hashtag=hashtag, until=until)
+            print(f"date {since_str} -> {until}")
+            motitter.scrape(since_str, save_path, hashtag=hashtag, until=until)
 
 
 def user_scraper(userName: str, since: str):
     save_path = output.user_database(userName)
-    diffs = get_diff_date(save_path, since)
+    diffs = get_diff_date(save_path, copy.deepcopy(since))
     for dates in diffs:
-        since = dates[0]
+        since_str = dates[0]
         until = dates[1]
-        print(f"date {since} -> {until}")
-        motitter.scrape(since, save_path, from_account=userName, until=until)
+        print(f"date {since_str} -> {until}")
+        motitter.scrape(since_str, save_path, from_account=userName, until=until)
     df = pd.read_csv(save_path, index_col=None)
     return df
 
