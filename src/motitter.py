@@ -103,10 +103,11 @@ def scrape(
                 ) + datetime.timedelta(days=interval)
             else:
                 since = since + datetime.timedelta(days=interval)
-            if type(since) != str:
-                until_local = datetime.datetime.strptime(
-                    until_local, "%Y-%m-%d"
-                ) + datetime.timedelta(days=interval)
+            
+            #if type(since) != str:
+            #    until_local = datetime.datetime.strptime(
+            #        until_local, "%Y-%m-%d"
+            #    ) + datetime.timedelta(days=interval)
             #else:
             #    until_local = until_local + datetime.timedelta(days=interval)
             progress = progress + 1
