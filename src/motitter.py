@@ -54,7 +54,12 @@ def scrape(
             # write the csv header
             writer.writerow(header)
         while until_local <= datetime.datetime.strptime(until, "%Y-%m-%d"):
-            until_local = until_local + datetime.timedelta(days=interval)
+            if type(since) != str:
+                until_local = datetime.datetime.strptime(
+                    until_local, "%Y-%m-%d"
+                ) + datetime.timedelta(days=interval)
+            else:
+                until_local = until_local + datetime.timedelta(days=interval)
             scroll = 0
             if type(since) != str:
                 since = datetime.datetime.strftime(since, "%Y-%m-%d")

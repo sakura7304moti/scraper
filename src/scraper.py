@@ -13,10 +13,13 @@ def base_scraper(hashtag: str, since: str):
     save_path = output.base_database(hashtag)
     diffs = get_diff_date(save_path, copy.deepcopy(since))
     for dates in diffs:
-        since_str = dates[0]
-        until = dates[1]
-        print(f"date {since_str} -> {until}")
-        motitter.scrape(since_str, save_path, hashtag=hashtag, until=until)
+        if len(dates) != 0:
+            since_str = dates[0]
+            until = dates[1]
+            print(f"date {since_str} -> {until}")
+            motitter.scrape(since_str, save_path, hashtag=hashtag, until=until)
+        else:
+            print('no download')
     df = pd.read_csv(save_path, index_col=None)
     return df
 
@@ -29,20 +32,26 @@ def holo_scraper(since: str):
         diffs = get_diff_date(save_path, copy.deepcopy(since))
         print(f'diffs -> {diffs}')
         for dates in diffs:
-            since_str = copy.deepcopy(dates[0])
-            until = copy.deepcopy(dates[1])
-            print(f"date {since_str} -> {until}")
-            motitter.scrape(since_str, save_path, hashtag=hashtag, until=until)
+            if len(dates) != 0:
+                since_str = copy.deepcopy(dates[0])
+                until = copy.deepcopy(dates[1])
+                print(f"date {since_str} -> {until}")
+                motitter.scrape(since_str, save_path, hashtag=hashtag, until=until)
+            else:
+                print('no download')
 
 
 def user_scraper(userName: str, since: str):
     save_path = output.user_database(userName)
     diffs = get_diff_date(save_path, copy.deepcopy(since))
     for dates in diffs:
-        since_str = dates[0]
-        until = dates[1]
-        print(f"date {since_str} -> {until}")
-        motitter.scrape(since_str, save_path, from_account=userName, until=until)
+        if len(dates) != 0:
+            since_str = dates[0]
+            until = dates[1]
+            print(f"date {since_str} -> {until}")
+            motitter.scrape(since_str, save_path, from_account=userName, until=until)
+        else:
+            print('no download')
     df = pd.read_csv(save_path, index_col=None)
     return df
 
@@ -97,6 +106,9 @@ def get_diff_date(save_path: str, since: str):
             up_start_date = up_start_date.strftime("%Y-%m-%d")
             up_end_date = up_end_date.strftime("%Y-%m-%d")
             if under_start_date == under_end_date:
-                return [[up_start_date, up_end_date]]
+                if up_start_date == up_end_date:
+                    return [[]]
+                else:
+                    return [[up_start_date, up_end_date]]
             else:
                 return [[under_start_date, under_end_date], [up_start_date, up_end_date]]
