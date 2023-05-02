@@ -57,6 +57,7 @@ def get_diff_date(save_path: str, since: str):
     else:
         df = pd.read_csv(save_path)
         if len(df) == 0:
+            today_date = today_date.strftime("%Y-%m-%d")
             return [[since, today_date]]
         since_date = datetime.datetime.strptime(since, "%Y-%m-%d")
         since_date = since_date.date()
