@@ -63,7 +63,11 @@ def scrape(
             path = search_page(driver, since, until_local, hashtag, from_account)
 
             refresh += 1
-            last_position = driver.execute_script("return window.pageYOffset;")
+            try:
+                last_position = driver.execute_script("return window.pageYOffset;")
+            except:
+                sleep(10)
+                last_position = driver.execute_script("return window.pageYOffset;")
             scrolling = True
 
             print(
