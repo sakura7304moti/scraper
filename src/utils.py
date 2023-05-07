@@ -108,6 +108,7 @@ def init_driver(headless=True):
     except:
         driver = webdriver.Chrome(options=options)
     driver.get("https://twitter.com/home?lang=ja")
+    sleep(5)
     cookie = get_cookie()
     for c in cookie:
         driver.add_cookie(c)
@@ -128,7 +129,13 @@ def search_page(driver, since, until, hashtag=None, from_account=None):
     filter_replies = "%20-filter%3Areplies"
     minlikes = "%20min_faves%3A5"
     path = f"https://twitter.com/search?q={from_account}{hash_tags}{until}{since}{filter_replies}{minlikes}&src=typed_query&f=live"
-    driver.get(path)
+    while(True):
+        try:
+            driver.get(path)
+        except:
+            pass
+        else:
+            break
     return path
 
 
