@@ -24,7 +24,6 @@ def download(url, save_path):
             try:
                 response = urllib.request.urlopen(url, timeout=10)
             except Exception as e:
-                print(e)
                 pass
             else:
                 if response.status == 200:
@@ -33,10 +32,8 @@ def download(url, save_path):
                             f.write(response.read())
                             time.sleep(0.5)
                     except Exception as e:
-                        print(e)
                         pass
     except Exception as e:
-        print(e)
         pass
     finally:
         if os.path.exists(save_path):

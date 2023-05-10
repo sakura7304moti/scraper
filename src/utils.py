@@ -21,6 +21,15 @@ import urllib
 
 from .const import get_cookie
 
+def parse_number(text):
+    text = text.replace(',', '')
+    if '万' in text:
+        value = float(text[:-1]) * 10000
+    else:
+        value = float(text)
+    value = int(value)
+    return value
+
 
 def get_data(card, save_images=False, save_dir=None):
     """Extract data from tweet card"""
@@ -50,9 +59,9 @@ def get_data(card, save_images=False, save_dir=None):
             by=By.XPATH, value='.//div[@data-testid="like"]'
         ).text
         like_cnt = str(like_cnt)
-        like_cnt = int(re.sub("[^0-9]", "", like_cnt))
+        like_cnt = parse_number(like_cnt)
     except:
-        like_cnt = 0
+        return
     if like_cnt == "":
         return
 
