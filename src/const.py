@@ -97,4 +97,4 @@ class Output:
         )
 
     def user_image(self, userName: str):
-        return os.path.join(self._base_path, self._yml["user"]["image"], f"#{userName}")
+        return os.path.join(self._base_path, self._yml["user"]["image"], f"{userName}")
